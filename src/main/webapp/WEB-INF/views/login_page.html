@@ -1,0 +1,39 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book shelf login</title>
+    <meta charset="UTF-8">
+    <style>
+        #login_form {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .login_item {
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="login_form">
+<!--    <input class="login_item" th:type="text" placeholder="enter username">
+    <br>
+    <input class="login_item" th:type="password" placeholder="password">
+    <br>
+    <input class="login_item" th:type="submit" placeholder="login">
+    <br>-->
+    <form method="post" th:action="@{/login/auth}" th:object="${loginForm}">
+        <img class="login_item" th:src="@{/images/book_item.png}">
+        <br>
+        <input class="login_item" type="text" placeholder="enter username" th:field="*{username}">
+        <br>
+        <input class="login_item" type="password" placeholder="password" th:field="*{password}">
+        <br>
+        <input class="login_item" type="submit" value="login">
+    </form>
+
+</div>
+</body>
+</html>
