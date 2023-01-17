@@ -8,8 +8,9 @@
                                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <context:component-scan base-package="org.example.web"/>
+        <mvc:resources mapping="/**" location="classpath:images"/>
             <mvc:annotation-driven/>
-        <mvc:default-servlet-handler/>
+<!--        <mvc:default-servlet-handler/>-->
 
  <!--       <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>

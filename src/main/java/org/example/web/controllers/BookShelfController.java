@@ -42,7 +42,16 @@ public class BookShelfController {
         if (bookService.removeBookById(bookIdToRemove)){
             return "redirect:/books/shelf";
         } else {
-            return "book_shelf";
+            return "redirect:/books/shelf";
         }
     }
+    @PostMapping("/removeByRegex")
+    public String removeBookByRegex(@RequestParam(value = "queryRegex") String queryRegex){
+        if (bookService.removeBookByRegex(queryRegex)){
+            return "redirect:/books/shelf";
+        } else {
+            return "redirect:/books/shelf";
+        }
+    }
+
 }

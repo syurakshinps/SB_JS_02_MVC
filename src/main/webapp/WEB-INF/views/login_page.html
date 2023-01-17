@@ -25,7 +25,7 @@
     <input class="login_item" th:type="submit" placeholder="login">
     <br>-->
     <form method="post" th:action="@{/login/auth}" th:object="${loginForm}">
-        <img class="login_item" th:src="@{/images/book_item.png}">
+        <img class="login_item" th:src="@{/images/book_icon.png}">
         <br>
         <input class="login_item" type="text" placeholder="enter username" th:field="*{username}">
         <br>
