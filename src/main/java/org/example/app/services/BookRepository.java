@@ -24,4 +24,15 @@ private final List<Book> repo = new ArrayList<>();
     logger.info("stored new book: " + book);
     repo.add(book);
     }
+
+    @Override
+    public boolean removeItemById(Integer bookIdToRemove) {
+        for (Book book : retrieveAll()){
+            if (book.getId().equals(bookIdToRemove)){
+                logger.info("removed book: " + book);
+                return repo.remove(book);
+            }
+        }
+        return false;
+    }
 }
