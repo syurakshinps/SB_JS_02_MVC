@@ -1,6 +1,7 @@
 package org.example.app.services;
 
 import org.apache.log4j.Logger;
+import org.example.app.exceptions.BookShelfRegexException;
 import org.example.web.dto.Book;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ private final List<Book> repo = new ArrayList<>();
     }
 
     @Override
-    public boolean removeItemByRegex(String queryRegex) {
+    public boolean removeItemByRegex(String queryRegex){
 
         String myRegex = "^[a-zA-Z\\d%]+$";
         Pattern pattern = Pattern.compile(myRegex);
@@ -95,7 +96,7 @@ private final List<Book> repo = new ArrayList<>();
                 return successfullyRemoved;
             }
         logger.info("Your regex didn't match a record");
-        return successfullyRemoved;
+        return false;
 
     }
 
