@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS books;
+
+CREATE TABLE books
+(
+    id     INT PRIMARY KEY AUTO_INCREMENT,
+    author VARCHAR(250) NOT NULL,
+    title  VARCHAR(250) NOT NULL,
+    size INT DEFAULT NULL
+);
+
+

@@ -39,6 +39,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.info("config http security");
+        http.headers().frameOptions().disable();
         http
                 .csrf().disable()
                 .authorizeRequests()
