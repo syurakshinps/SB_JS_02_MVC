@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,11 +68,7 @@ public class BookShelfController {
             bookService.removeBookById(bookIdToRemove.getId());
             return "redirect:/books/shelf";
         }
-/*        if (bookService.removeBookById(bookIdToRemove.getId())){
-            return "redirect:/books/shelf";
-        } else {
-            return "redirect:/books/shelf";
-        }*/
+
     }
     @PostMapping("/removeByRegex")
     public String removeBookByRegex(@RequestParam(value = "queryRegex") String queryRegex){
@@ -83,27 +81,32 @@ public class BookShelfController {
 
 
     @PostMapping("/uploadFile")
-    public String uploadFile(@RequestParam("file")MultipartFile file) throws Exception{
-        String name = file.getOriginalFilename();
-        byte[] bytes = file.getBytes();
+    public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception{
+         try {
+            String name = file.getOriginalFilename();
+            byte[] bytes = file.getBytes();
 
-        //create dir
-        String rootPath = System.getProperty("catalina.home");
-        File dir = new File(rootPath + File.separator + "external_uploads");
-        if (!dir.exists()){
-            dir.mkdirs();
+            //create dir
+            String rootPath = System.getProperty("catalina.home");
+            File dir = new File(rootPath + File.separator + "external_uploads");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            //create file
+            File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+            stream.write(bytes);
+            stream.close();
+
+            logger.info("saved new file: " + serverFile.getAbsolutePath());
+
+            return "redirect:/books/shelf";
+        }catch (Exception e){
+             e.printStackTrace();
+            logger.info("no file name given");
+            return "redirect:/books/shelf";
         }
-
-        //create file
-        File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
-        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-        stream.write(bytes);
-        stream.close();
-
-        logger.info("saved new file: " + serverFile.getAbsolutePath());
-
-        return "redirect:/books/shelf";
-
 
 
     }

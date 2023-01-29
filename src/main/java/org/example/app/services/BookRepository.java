@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class BookRepository<T> implements ProjectRepository<Book>, ApplicationContextAware {
@@ -53,11 +55,6 @@ private final List<Book> repo = new ArrayList<>();
         jdbcTemplate.update("INSERT INTO books(author,title,size) VALUES (:author, :title, :size)", sqlParameterSource);
     logger.info("stored a new book: " + book);
 
-/*    if ((!book.getAuthor().equals(empty)) || (!book.getTitle().equals(empty)) || (book.getSize() !=null)) {
-       // repo.add(book);
-    }else {
-        logger.info("cannot store a book with ALL empty fields (author='', title='', size=null): " + book);
-    }*/
     }
 
     @Override
@@ -67,39 +64,39 @@ private final List<Book> repo = new ArrayList<>();
         jdbcTemplate.update("DELETE FROM books WHERE id = :id", sqlParameterSource);
         logger.info("removed book id: " + bookIdToRemove);
         return true;
-
-/*        for (Book book : retrieveAll()){
-            if (book.getId().equals(bookIdToRemove)){
-                logger.info("removed book: " + book);
-                return true; //repo.remove(book);
-            }
-        }
-        logger.info("no book with id: " + bookIdToRemove);
-        return false;*/
     }
 
     @Override
     public boolean removeItemByRegex(String queryRegex) {
+
+        String myRegex = "^[a-zA-Z\\d%]+$";
+        Pattern pattern = Pattern.compile(myRegex);
+        Matcher matcher = pattern.matcher(queryRegex);
         Boolean successfullyRemoved = false;
-        if (!queryRegex.equals("")) {
-            for (Book book : retrieveAll()) {
-                if (book.getAuthor().matches(queryRegex)
-                        | (book.getTitle().matches(queryRegex))
-                        | ((String.valueOf(book.getSize())).matches(queryRegex))) {
-                    logger.info("regex given: " + queryRegex);
-                    logger.info("removed book: " + book);
-                   // successfullyRemoved = repo.remove(book);
-                } else {
-                    logger.info("no books found with regex: " + queryRegex);
-                    return successfullyRemoved;
+        if (matcher.matches() && !queryRegex.equals(""))
+            try {
+                {
+                    MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+                    sqlParameterSource.addValue("regex", queryRegex);
+                    int result = jdbcTemplate.queryForObject("SELECT count (1) FROM books where AUTHOR like :regex OR TITLE like :regex OR SIZE like :regex", sqlParameterSource, Integer.class);
+                    logger.info("found " + result + " record(s)");
+                    if (result == 0) {
+                        return successfullyRemoved;
+                    } else {
+                        jdbcTemplate.update("DELETE FROM books WHERE AUTHOR like :regex OR TITLE like :regex OR SIZE like :regex", sqlParameterSource);
+                        successfullyRemoved = Boolean.TRUE;
+                        logger.info("removed " + result + " book(s) through regex: " + queryRegex);
+                        return successfullyRemoved;
+                    }
                 }
-                //  return successfullyRemoved;
+            } catch (Exception e){
+                e.printStackTrace();
+                logger.info("Something went wrong with your regex");
+                return successfullyRemoved;
             }
-            // logger.info("no books found with regex: " + queryRegex);
-            return successfullyRemoved;
-        } else{
-            return successfullyRemoved;
-        }
+        logger.info("Your regex didn't match a record");
+        return successfullyRemoved;
+
     }
 
     @Override

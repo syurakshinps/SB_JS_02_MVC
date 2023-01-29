@@ -37,9 +37,11 @@
             <tr>
                 <td>
                     <input type="text" placeholder="author" th:field="*{author}">
+                    <p th:if="${#fields.hasErrors()}">Field value should be not empty</p>
                 </td>
                 <td>
                     <input type="text" placeholder="book_title" th:field="*{title}">
+                    <p th:if="${#fields.hasErrors()}">Field value should be not empty</p>
                 </td>
                 <td>
                     <input type="text" placeholder="size (pages)" th:field="*{size}">
@@ -98,7 +100,7 @@
         </tr>
     </table>
 
-    <form method="post" th:action="@{/books/removeByRegex}">
+    <form method="post" th:action="@{/books/removeByRegex}" th:object="${removeBookByRegex}">
         <table>
             <tr>
                 <td>
@@ -106,6 +108,9 @@
                 </td>
                 <td>
                     <input type="submit" value="remove by regex">
+                </td>
+                <td th:if="${#fields.hasErrors()}">
+                    <p>Currently you can only use regex for LIKE sql query.</p>
                 </td>
             </tr>
         </table>

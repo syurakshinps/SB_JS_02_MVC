@@ -1,11 +1,15 @@
 package org.example.web.dto;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.security.PrivateKey;
 
 public class Book {
     private Integer id;
+    @NotEmpty
     private String author;
+    @NotEmpty
     private String title;
     @Digits(integer = 4, fraction = 0)
     private Integer size;
